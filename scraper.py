@@ -49,6 +49,13 @@ def is_valid(url):
                    (re.match(r"^(/department/information_computer_sciences/)(.+)$", parsed.path)))):
             return False
 
+        # Ensure potential traps are not included in the url
+        potential_traps = ["/event/", "/events/", "calendar", "date", "gallery", "image",
+                           "wp-content", "index.php", "upload"]
+        for trap in potential_traps:
+            if trap in url:
+                return False
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
