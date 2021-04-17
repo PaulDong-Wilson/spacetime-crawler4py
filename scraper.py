@@ -18,12 +18,12 @@ def extract_next_links(url, resp):
         # Initiate the HTML parser for the downloaded webpage
         html_parser = BeautifulSoup(resp.raw_response.content, "lxml") # Requires lxml parser library
 
+        # TODO scrape text later
+
         # Loop through <a> tags in the HTML
         for next_attribute in html_parser.find_all('a'):
             # Get the link from the <a> tag
             next_link = next_attribute.get('href')
-
-            # TODO scrape text later
 
             # If the link is valid, add it to the list
             if (next_link is not None) and is_valid(next_link):
@@ -36,8 +36,19 @@ def extract_next_links(url, resp):
 def is_valid(url):
     try:
         parsed = urlparse(url)
-        if parsed.scheme not in set(["http", "https"]):
+
+        if parsed.scheme not in ["http", "https"]:
             return False
+
+        # Ensure the url is within one of the valid domains and paths
+        elif not ((re.match(r"^(.+\.)(ics\.uci\.edu)$", parsed.netloc)) or
+                  (re.match(r"^(.+\.)(cs\.uci\.edu)$", parsed.netloc)) or
+                  (re.match(r"^(.+\.)(informatics\.uci\.edu)$", parsed.netloc)) or
+                  (re.match(r"^(.+\.)(stat\.uci\.edu)$", parsed.netloc)) or
+                  ((parsed.netloc == "today.uci.edu") and
+                   (re.match(r"^(/department/information_computer_sciences/)(.+)$", parsed.path)))):
+            return False
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
