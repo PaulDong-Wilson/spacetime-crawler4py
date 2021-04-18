@@ -12,7 +12,7 @@ def extract_next_links(url, resp):
     url_list = []
 
     # Check and ensure the url response was valid (no errors nor non-OK status)
-    if (resp.error is not None) and (resp.status == 200):
+    if (resp.error is None) and (resp.status == 200):
         # BeautifulSoup setup adapted from their Quick Start https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 
         # Initiate the HTML parser for the downloaded webpage
@@ -26,8 +26,8 @@ def extract_next_links(url, resp):
             next_link = next_attribute.get('href')
 
             # If the link is valid, add it to the list
-            if (next_link is not None) and is_valid(next_link):
-                url_list.append(urldefrag(next_link)) # Defrag the link before adding to the list
+            if next_link is not None:
+                url_list.append(urldefrag(next_link)[0]) # Defrag the link before adding to the list
 
     # Return the filtered list of links
     return url_list
@@ -49,9 +49,14 @@ def is_valid(url):
                    (re.match(r"^(/department/information_computer_sciences/)(.+)$", parsed.path)))):
             return False
 
+        # Ensure the link does not have a query
+        if parsed.query != "":
+            return False
+
         # Ensure potential traps are not included in the url
         potential_traps = ["/event/", "/events/", "calendar", "date", "gallery", "image",
-                           "wp-content", "index.php", "upload"]
+                           "wp-content", "index.php", "upload", "/pdf", "attachment/"
+                           "?replytocom=", "?version=", "?share=", "redirect="]
         for trap in potential_traps:
             if trap in url:
                 return False
@@ -60,7 +65,7 @@ def is_valid(url):
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
-            + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
+            + r"|ps|eps|tex|ppt|pptx|ppsx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
