@@ -55,7 +55,7 @@ def is_valid(url):
 
         # Ensure potential traps are not included in the url
         potential_traps = ["/event/", "/events/", "calendar", "date", "gallery", "image",
-                           "wp-content", "index.php", "upload", "/pdf", "attachment/"
+                           "wp-content", "index.php", "upload", "/pdf", "attachment/",
                            "?replytocom=", "?version=", "?share=", "redirect="]
         for trap in potential_traps:
             if trap in url:
