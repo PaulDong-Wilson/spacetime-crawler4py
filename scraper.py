@@ -1,6 +1,7 @@
 import re
 from urllib.parse import urlparse, urldefrag
 from bs4 import BeautifulSoup
+import shelve
 
 
 def scraper(url, resp):
@@ -18,7 +19,15 @@ def extract_next_links(url, resp):
         # Initiate the HTML parser for the downloaded webpage
         html_parser = BeautifulSoup(resp.raw_response.content, "lxml") # Requires lxml parser library
 
-        # TODO scrape text later
+        # Scrape all human-readable text from the webpage
+        webpage_text = html_parser.get_text()
+
+        # If the webpage contains a significant amount of content (at least 200 words),
+        # store the text in the text storage shelve, and associate it with the current URL
+        if has_substantial_information(webpage_text, 200):
+            with shelve.open("Webpage_Text.shelve") as text_storage:
+                text_storage[url] = webpage_text
+                text_storage.sync()
 
         # Loop through <a> tags in the HTML
         for next_attribute in html_parser.find_all('a'):
@@ -70,3 +79,22 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
+
+
+def has_substantial_information(text_to_tokenize: str, word_minimum: int) -> bool:
+    # Keep a count of the number of alphanumeric words found
+    word_count = 0
+
+    # Separate the text by all non-alphanumeric characters, and loop through it
+    for next_word in re.split(r"[^a-zA-Z0-9]", text_to_tokenize):
+
+        # If the next word is alphanumeric, increase the count of alphanumeric words
+        if re.match(r"^[a-zA-Z0-9]+$", next_word) is not None:
+            word_count += 1
+
+        # If the amount of alphanumeric words has surpassed the minimum, return that the text is substantial
+        if word_count >= word_minimum:
+            return True
+
+    # Otherwise, the text did not have enough alphanumeric words to be considered substantial
+    return False
