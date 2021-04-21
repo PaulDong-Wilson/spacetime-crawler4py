@@ -17,10 +17,10 @@ def extract_next_links(url, resp):
         # BeautifulSoup setup adapted from their Quick Start https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 
         # Initiate the HTML parser for the downloaded webpage
-        html_parser = BeautifulSoup(resp.raw_response.content, "lxml") # Requires lxml parser library
+        soup = BeautifulSoup(resp.raw_response.content, "lxml") # Requires lxml parser library
 
         # Scrape all human-readable text from the webpage
-        webpage_text = html_parser.get_text()
+        webpage_text = soup.get_text()
 
         # If the webpage contains a significant amount of content (at least 200 words),
         # store the text in the text storage shelve, and associate it with the current URL
@@ -30,7 +30,7 @@ def extract_next_links(url, resp):
                 text_storage.sync()
 
         # Loop through <a> tags in the HTML
-        for next_attribute in html_parser.find_all('a'):
+        for next_attribute in soup.find_all('a'):
             # Get the link from the <a> tag
             next_link = next_attribute.get('href')
 
@@ -61,7 +61,7 @@ def is_valid(url):
         # Ensure potential traps are not included in the url
         potential_traps = ["/event/", "/events/", "calendar", "date", "gallery", "image",
                            "wp-content", "index.php", "upload", "/pdf", "attachment/",
-                           "?replytocom=", "?version=", "?share=", "?redirect=", "?redirect_to="]
+                           "?replytocom=", "?version=", "?share=", "?redirect=", "?redirect_to=", "?action="]
         for trap in potential_traps:
             if trap in url:
                 return False
