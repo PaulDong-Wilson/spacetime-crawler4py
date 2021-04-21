@@ -49,14 +49,10 @@ def is_valid(url):
                    (re.match(r"^(/department/information_computer_sciences/)(.+)$", parsed.path)))):
             return False
 
-        # Ensure the link does not have a query
-        if parsed.query != "":
-            return False
-
         # Ensure potential traps are not included in the url
         potential_traps = ["/event/", "/events/", "calendar", "date", "gallery", "image",
                            "wp-content", "index.php", "upload", "/pdf", "attachment/",
-                           "?replytocom=", "?version=", "?share=", "redirect="]
+                           "?replytocom=", "?version=", "?share=", "?redirect=", "?redirect_to="]
         for trap in potential_traps:
             if trap in url:
                 return False
