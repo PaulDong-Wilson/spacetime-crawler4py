@@ -22,5 +22,5 @@ def ics_subdomain(self, url):
 ## Keep track of the subdomains that it visited, 
 ## and count how many different URLs it has processed 
 ## from each of those subdomains.\n")
-for key, value in sorted(self.subdomain_dict.items(), key=lambda _: _[1], reverse=True):
-    #write..
+for subdomain, value in sorted(self.subdomain_dict.items(), key=lambda _: _[1], reverse=True):
+    #write("\n" + subdomain + ", " + str(value))
