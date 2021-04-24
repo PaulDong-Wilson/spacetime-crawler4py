@@ -36,7 +36,7 @@ def extract_next_links(url, resp):
 
             # If the link is valid, add it to the list
             if next_link is not None:
-                url_list.append(urldefrag(next_link)[0]) # Defrag the link before adding to the list
+                url_list.append(urldefrag(next_link)[0].strip()) # Defrag and strip the link before adding to the list
 
     # Return the filtered list of links
     return url_list
