@@ -72,7 +72,7 @@ def get_longest_page(shelf: shelve.DbfilenameShelf) -> (str, int):
     for key in keys:
 
         # Get the words for the current url and count its words
-        words = shelf[key]
+        words = re.split(r"[\s\-–]", shelf[key])
         word_count = len(words)
 
         # If the amount of words for this url is more than the previous longest page, update the longest page and

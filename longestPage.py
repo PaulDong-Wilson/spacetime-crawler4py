@@ -1,4 +1,5 @@
 import shelve
+import re
 
 def longestPage():
     shelf = shelve.open("Webpage_Text.shelve")
@@ -6,7 +7,7 @@ def longestPage():
     longest_page_count = 0
     keys = shelf.keys()
     for key in keys:
-        words = shelf[key]
+        words = re.split(r"[\s\-–]", shelf[key])
         word_count = len(words)
         if word_count > longest_page_count:
             longest_page_count = word_count
