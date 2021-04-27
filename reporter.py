@@ -142,10 +142,10 @@ if __name__ == "__main__":
         ics_subdomains = get_ics_subdomains(worker_log)
 
         # Print the results
-        print(f"The number of unique pages found was: {unique_urls_found}")
-        print(f'\nThe longest page was "{longest_page}" with a length of {longest_page_count}')
+        print(f"{unique_urls_found} unique pages were found by our crawler.")
+        print(f'\nThe longest page was "{longest_page}" with {longest_page_count} words.')
 
-        print("\nThe 50 most common words (and their frequencies) are:")
+        print("\nThe 50 most common words and their frequencies are:")
         for next_common_word, next_frequency in most_common_words:
             print(f"{next_common_word}, {next_frequency:}")
 
